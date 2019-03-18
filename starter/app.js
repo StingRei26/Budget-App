@@ -1,9 +1,15 @@
+
+
 // BUDGET CONTROLLER 
 var budgetController = (function() {
 
 //Some cod
 
 })(); 
+
+
+
+
 
 // UI CONTROLLER
 var UIController = (function() {
@@ -13,11 +19,15 @@ var UIController = (function() {
 })(); 
 
 
+
+
+
 // GLOBAL APP CONTROLLER 
 var controller = (function(budgetCtrl, UICtrl) {
 
 
 var ctrlAddItem = function() {
+
 
 
 // 1. Get the field input data
@@ -44,3 +54,5 @@ document.addEventListener('keypress', function(event){
 
 
 })(budgetController, UIController);
+
+

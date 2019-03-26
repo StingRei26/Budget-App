@@ -8,29 +8,50 @@ var budgetController = (function() {
 })(); 
 
 
-
-
-
 // UI CONTROLLER
 var UIController = (function() {
 
-// Some code 
+// to secure that the class for the values is saved (.add__type, .add__description, .add__value)
+
+var DOMstring = {
+  inputType: '.add__type',
+  inputDescription: '.add__description',
+  inputValue: '.add__value', 
+  inputBtn: '.add__btn'
+};
+
+return {
+    getInput: function() {
+        return {
+            type: document.querySelector(DOMstring.inputType).value,
+            description: document.querySelector(DOMstring.inputDescription).value,
+            value: document.querySelector(DOMstring.inputValue).value
+
+        };
+    },
+
+    getDOMstrings: function() {
+      return DOMstring; 
+    }
+};
 
 })(); 
 
 
 
 
-
-// GLOBAL APP CONTROLLER 
+// GLOBAL APP CONTROLLER // this runs the two fucntions above based on action 
 var controller = (function(budgetCtrl, UICtrl) {
 
+var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
 
 var ctrlAddItem = function() {
 
-
-
 // 1. Get the field input data
+
+var input = UICtrl.getInput();
+console .log(input);
+
 
 // 2. Add the item to the controller 
 
@@ -42,7 +63,7 @@ var ctrlAddItem = function() {
 
 }
 
-document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 
 document.addEventListener('keypress', function(event){
  
@@ -50,8 +71,7 @@ document.addEventListener('keypress', function(event){
      ctrlAddItem(); 
   }
 
-});
-
+  });
 
 })(budgetController, UIController);
 

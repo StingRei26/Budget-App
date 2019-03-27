@@ -11,6 +11,8 @@ var budgetController = (function() {
 // UI CONTROLLER
 var UIController = (function() {
 
+
+
 // to secure that the class for the values is saved (.add__type, .add__description, .add__value)
 
 var DOMstring = {
@@ -43,6 +45,19 @@ return {
 // GLOBAL APP CONTROLLER // this runs the two fucntions above based on action 
 var controller = (function(budgetCtrl, UICtrl) {
 
+
+var setupEventListeners = function() {
+    var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well   
+
+    document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+
+    document.addEventListener('keypress', function(event){
+        if (event.keyCode === 13 || event.which === 13) {
+        ctrlAddItem(); 
+        }
+    });
+  }
+
 var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
 
 var ctrlAddItem = function() {
@@ -63,16 +78,15 @@ console .log(input);
 
 }
 
-document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+return {
+    init: function() {
+        console.log('Application has started'); 
+        setupEventListeners(); 
+    }
+};
 
-document.addEventListener('keypress', function(event){
- 
- if (event.keyCode === 13 || event.which === 13) {
-     ctrlAddItem(); 
-  }
-
-  });
 
 })(budgetController, UIController);
 
 
+controller.init(); 

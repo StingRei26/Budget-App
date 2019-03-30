@@ -3,7 +3,7 @@
 // BUDGET CONTROLLER 
 var budgetController = (function() {
 
-// creating a DATA type using fucntion Constructor using .this
+// creating a DATA type using fucntion Constructor using (.this)
 
 var Expense = function(id, description, value) {
     this.id = id; 
@@ -29,6 +29,32 @@ var data = {
         inc: 0
     }
   };
+
+// If item is "exp" or "inc" a new item will be pushed to the allItems array above 
+  return {
+      addItem: function(type, des, val) {
+          var newItem, ID; 
+          
+          //[1 2 3  4 5], next ID = 6
+          //[1 2  4 6 8], next ID = 9
+          // ID = last ID + 1
+
+          // Create new ID 
+          ID  = data.allItems[type][data.allItems[type].lenght - 1].id + 1; 
+
+          // Craete new item based on 'inc' or 'exp' type
+          if (type === 'exp') {
+              newItem = new Expense(ID, des, val); 
+           } else if (type === 'inc') {
+               newItem = new Income(ID, des, val); 
+           }   
+          // Push it into our data structure 
+           data.allItems[type].push(newItem); 
+
+          // Return the new element 
+           return newItem;
+     }
+  }; 
 
 
 })(); 

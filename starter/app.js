@@ -1,5 +1,3 @@
-
-
 // BUDGET CONTROLLER 
 var budgetController = (function() {
 
@@ -40,29 +38,37 @@ var data = {
           // ID = last ID + 1
 
           // Create new ID 
-          ID  = data.allItems[type][data.allItems[type].lenght - 1].id + 1; 
-
-          // Craete new item based on 'inc' or 'exp' type
+          if (data.allItems[type].length > 0) {
+          ID = data.allItems[type][data.allItems[type].length - 1].id + 1; 
+          } else {
+              ID = 0; 
+          }
+          
+          // Create new item based on 'inc' or 'exp' type
           if (type === 'exp') {
               newItem = new Expense(ID, des, val); 
            } else if (type === 'inc') {
                newItem = new Income(ID, des, val); 
            }   
+          
           // Push it into our data structure 
            data.allItems[type].push(newItem); 
 
+          
           // Return the new element 
-           return newItem;
-     }
-  }; 
+         return newItem;   
+     },
+  
+        testing: function() {
+            console.log(data); 
+        }
+}; 
 
 
 })(); 
 
 // UI CONTROLLER
 var UIController = (function() {
-
-
 
 // to secure that the class for the values is saved (.add__type, .add__description, .add__value)
 
@@ -90,9 +96,6 @@ return {
 
 })(); 
 
-
-
-
 // GLOBAL APP CONTROLLER // this runs the two fucntions above based on action 
 var controller = (function(budgetCtrl, UICtrl) {
 
@@ -107,19 +110,19 @@ var setupEventListeners = function() {
         ctrlAddItem(); 
         }
     });
-  }
+  };
 
-var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
+// var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
 
 var ctrlAddItem = function() {
+    var input, newItem; 
 
 // 1. Get the field input data
-
-var input = UICtrl.getInput();
-console .log(input);
-
+input = UICtrl.getInput();
+console.log(input);
 
 // 2. Add the item to the controller 
+newItem = budgetCtrl.addItem(input.type, input.description, input.value); 
 
 // 3. Add the item to the UI
 

@@ -67,6 +67,11 @@ var data = {
 
 })(); 
 
+
+
+
+
+
 // UI CONTROLLER
 var UIController = (function() {
 
@@ -76,7 +81,9 @@ var DOMstring = {
   inputType: '.add__type',
   inputDescription: '.add__description',
   inputValue: '.add__value', 
-  inputBtn: '.add__btn'
+  inputBtn: '.add__btn', 
+  incomeContainer: '.income__list', 
+  expensesContainer: '.expenses__list'
 };
 
 return {
@@ -89,12 +96,53 @@ return {
         };
     },
 
+    addListItem: function(obj, type) {
+
+    var html, newHtml, element; 
+    
+    // 1. Create HTML sting with placeholder text / compress html from the income/expense structure
+
+   //INCOME 
+   if (type === 'inc'){
+    element = DOMstring.incomeContainer; 
+        html ='<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
+    } else if (type === 'exp'){
+    element = DOMstring.expensesContainer; 
+   //EXPENSE
+   html ='<div class="item clearfix" id="expense-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"> <div class="item__value">%value%</div> <div class="item__percentage">21%</div> <div class="item__delete"> <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> </div> </div>'
+   }
+    // 2. Reaplace the placeholder text with some actual data
+
+    newHtml = html.replace('%id%', obj.id); 
+    newHtml = newHtml.replace('%description%', obj.description); 
+    newHtml = newHtml.replace('%value%', obj.value);  
+
+    // 3. Insert the HTML into the DOM
+    document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);   
+},
+    // TO CLEAR ITEMS
+    clearFields: function() {
+     var fields, fieldsArr; 
+
+    fields = document.querySelectorAll(DOMstring.inputDescription +  ', ' + DOMstring.inputValue); 
+    fieldsArr = Array.prototype.slice.call(fields); 
+    fieldsArr.forEach(function(current, index, array) {
+        current.value = ""; 
+      });
+    // sets the focude "blink selector | " back to the description filed
+    fieldsArr[0].focus(); 
+    }, 
+
     getDOMstrings: function() {
       return DOMstring; 
     }
 };
 
 })(); 
+
+
+
+
 
 // GLOBAL APP CONTROLLER // this runs the two fucntions above based on action 
 var controller = (function(budgetCtrl, UICtrl) {
@@ -125,10 +173,14 @@ console.log(input);
 newItem = budgetCtrl.addItem(input.type, input.description, input.value); 
 
 // 3. Add the item to the UI
+UICtrl.addListItem(newItem, input.type); 
 
-// 4. Calculate the budget 
+// 4. Clear the fields 
+UICtrl.clearFields();  
 
-// 5. Display the budget on the UI 
+// 5. Calculate the budget 
+
+// 6. Display the budget on the UI 
 
 }
 

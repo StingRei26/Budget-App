@@ -69,9 +69,6 @@ var data = {
 
 
 
-
-
-
 // UI CONTROLLER
 var UIController = (function() {
 
@@ -91,7 +88,7 @@ return {
         return {
             type: document.querySelector(DOMstring.inputType).value,
             description: document.querySelector(DOMstring.inputDescription).value,
-            value: document.querySelector(DOMstring.inputValue).value
+            value: parseFloat(document.querySelector(DOMstring.inputValue).value)
 
         };
     },
@@ -142,8 +139,6 @@ return {
 
 
 
-
-
 // GLOBAL APP CONTROLLER // this runs the two fucntions above based on action 
 var controller = (function(budgetCtrl, UICtrl) {
 
@@ -160,6 +155,15 @@ var setupEventListeners = function() {
     });
   };
 
+var updateBudget = function() {
+
+// 1. Calculate the budget 
+
+// 2. Return the budget 
+
+// 3. Display the budget on the UI
+}
+
 // var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
 
 var ctrlAddItem = function() {
@@ -168,6 +172,8 @@ var ctrlAddItem = function() {
 // 1. Get the field input data
 input = UICtrl.getInput();
 console.log(input);
+
+if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
 
 // 2. Add the item to the controller 
 newItem = budgetCtrl.addItem(input.type, input.description, input.value); 
@@ -178,11 +184,11 @@ UICtrl.addListItem(newItem, input.type);
 // 4. Clear the fields 
 UICtrl.clearFields();  
 
-// 5. Calculate the budget 
+// 5. Calculate the budget budget
+updateBudget(); 
 
-// 6. Display the budget on the UI 
-
-}
+   } 
+};
 
 return {
     init: function() {

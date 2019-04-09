@@ -15,7 +15,24 @@ var Income = function(id, description, value) {
     this.value = value; 
 }; 
 
-// DATA structure
+// To calculate sum of totals 
+var calculateTotal = function(type) {
+
+    var sum = 0; 
+    data.allItems[type].forEach(function(cur){
+        sum += cur.value; 
+ });
+ 
+ data.totals[type] = sum; 
+ // example of above calc 
+//  sum = 0 
+//  [200, 400, 100]
+//  sum = 0 + 200
+//  sum = 200 + 400
+//  sum = 600 + 100 = 700
+};
+
+// DATA structure (GLOBAL DATA OBJECT)
 
 var data = {
     allItems: {
@@ -25,7 +42,9 @@ var data = {
     totals: {
         exp: 0,
         inc: 0
-    }
+    }, 
+    budget: 0, 
+    percentage: -1
   };
 
 // If item is "exp" or "inc" a new item will be pushed to the allItems array above 
@@ -58,7 +77,30 @@ var data = {
           // Return the new element 
          return newItem;   
      },
-  
+        calculateBudget: function(){
+        // Calculate total income and expenses 
+        calculateTotal('exp');
+        calculateTotal('inc'); 
+        // Calculate  the budget: income - expenses 
+        data.budget = data.totals.inc - data.totals.exp;
+        // Calculate the percentage of income that we spent 
+        if (data.totals.inc > 0) {
+        data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+             // Expense = 100 and income 300, spent 33.333% = 100/300 = 0.3333 * 100
+        } else {
+            data.percentage = -1;
+        }
+     },
+   
+        getBudget: function() {
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc, 
+                totalExp: data.totals.exp, 
+                percentage: data.percentage
+            }
+        }, 
+
         testing: function() {
             console.log(data); 
         }
@@ -156,12 +198,12 @@ var setupEventListeners = function() {
   };
 
 var updateBudget = function() {
-
 // 1. Calculate the budget 
-
+budgetCtrl.calculateBudget(); 
 // 2. Return the budget 
-
+var budget = budgetCtrl.getBudget(); 
 // 3. Display the budget on the UI
+console.log(budget); 
 }
 
 // var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 

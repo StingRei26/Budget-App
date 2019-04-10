@@ -72,8 +72,6 @@ var data = {
           
           // Push it into our data structure 
            data.allItems[type].push(newItem); 
-
-          
           // Return the new element 
          return newItem;   
      },
@@ -105,13 +103,12 @@ var data = {
             console.log(data); 
         }
 }; 
-
-
 })(); 
 
-
+//-----------------------------------------------------------------------
 
 // UI CONTROLLER
+
 var UIController = (function() {
 
 // to secure that the class for the values is saved (.add__type, .add__description, .add__value)
@@ -127,8 +124,6 @@ var DOMstrings = {
   incomeLabel: '.budget__income--value', 
   expensesLabel: '.budget__expenses--value', 
   percentageLabel: '.budget__expenses--percentage'
-
-
 };
 
 return {
@@ -142,9 +137,7 @@ return {
     },
 
     addListItem: function(obj, type) {
-
     var html, newHtml, element; 
-    
     // 1. Create HTML sting with placeholder text / compress html from the income/expense structure
 
    //INCOME 
@@ -177,30 +170,33 @@ return {
     // sets the focude "blink selector | " back to the description filed
     fieldsArr[0].focus(); 
 }, 
-
-
-
 displayBudget: function(obj) {
 
 document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget; 
 document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc; 
-document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExp; 
-document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage; 
+document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExp;  
 
+if (obj.percentage > 0) {
+    document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + "%"; 
+} else {
+    document.querySelector(DOMstrings.percentageLabel).textContent = "---"; 
+}
 },
 
     getDOMstrings: function() {
       return DOMstrings; 
     }
 };
-
 })(); 
 
 
+//------------------------------------------------------------------------------
+
+
 // GLOBAL APP CONTROLLER // this runs the two fucntions above based on action 
+
+
 var controller = (function(budgetCtrl, UICtrl) {
-
-
 var setupEventListeners = function() {
     var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well   
 
@@ -220,30 +216,23 @@ budgetCtrl.calculateBudget();
 var budget = budgetCtrl.getBudget(); 
 // 3. Display the budget on the UI
 UICtrl.displayBudget(budget);
-
-
 console.log(budget); 
 }
 
 // var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
 var ctrlAddItem = function() {
     var input, newItem; 
-
 // 1. Get the field input data
 input = UICtrl.getInput();
 console.log(input);
 
 if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
-
 // 2. Add the item to the controller 
 newItem = budgetCtrl.addItem(input.type, input.description, input.value); 
-
 // 3. Add the item to the UI
 UICtrl.addListItem(newItem, input.type); 
-
 // 4. Clear the fields 
 UICtrl.clearFields();  
-
 // 5. Calculate the budget budget
 updateBudget(); 
 
@@ -253,12 +242,15 @@ updateBudget();
 return {
     init: function() {
         console.log('Application has started'); 
+        UICtrl.displayBudget({
+            budget: 0,
+            totalInc: 0, 
+            totalExp: 0, 
+            percentage: -1
+        });
         setupEventListeners(); 
+
     }
 };
-
-
 })(budgetController, UIController);
-
-
 controller.init(); 

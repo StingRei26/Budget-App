@@ -116,21 +116,27 @@ var UIController = (function() {
 
 // to secure that the class for the values is saved (.add__type, .add__description, .add__value)
 
-var DOMstring = {
+var DOMstrings = {
   inputType: '.add__type',
   inputDescription: '.add__description',
   inputValue: '.add__value', 
   inputBtn: '.add__btn', 
   incomeContainer: '.income__list', 
-  expensesContainer: '.expenses__list'
+  expensesContainer: '.expenses__list',
+  budgetLabel: '.budget__value',
+  incomeLabel: '.budget__income--value', 
+  expensesLabel: '.budget__expenses--value', 
+  percentageLabel: '.budget__expenses--percentage'
+
+
 };
 
 return {
     getInput: function() {
         return {
-            type: document.querySelector(DOMstring.inputType).value,
-            description: document.querySelector(DOMstring.inputDescription).value,
-            value: parseFloat(document.querySelector(DOMstring.inputValue).value)
+            type: document.querySelector(DOMstrings.inputType).value,
+            description: document.querySelector(DOMstrings.inputDescription).value,
+            value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
 
         };
     },
@@ -143,10 +149,10 @@ return {
 
    //INCOME 
    if (type === 'inc'){
-    element = DOMstring.incomeContainer; 
+    element = DOMstrings.incomeContainer; 
         html ='<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
     } else if (type === 'exp'){
-    element = DOMstring.expensesContainer; 
+    element = DOMstrings.expensesContainer; 
    //EXPENSE
    html ='<div class="item clearfix" id="expense-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"> <div class="item__value">%value%</div> <div class="item__percentage">21%</div> <div class="item__delete"> <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> </div> </div>'
    }
@@ -163,22 +169,32 @@ return {
     clearFields: function() {
      var fields, fieldsArr; 
 
-    fields = document.querySelectorAll(DOMstring.inputDescription +  ', ' + DOMstring.inputValue); 
+    fields = document.querySelectorAll(DOMstrings.inputDescription +  ', ' + DOMstrings.inputValue); 
     fieldsArr = Array.prototype.slice.call(fields); 
     fieldsArr.forEach(function(current, index, array) {
         current.value = ""; 
       });
     // sets the focude "blink selector | " back to the description filed
     fieldsArr[0].focus(); 
-    }, 
+}, 
+
+
+
+displayBudget: function(obj) {
+
+document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget; 
+document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc; 
+document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExp; 
+document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage; 
+
+},
 
     getDOMstrings: function() {
-      return DOMstring; 
+      return DOMstrings; 
     }
 };
 
 })(); 
-
 
 
 // GLOBAL APP CONTROLLER // this runs the two fucntions above based on action 
@@ -203,11 +219,13 @@ budgetCtrl.calculateBudget();
 // 2. Return the budget 
 var budget = budgetCtrl.getBudget(); 
 // 3. Display the budget on the UI
+UICtrl.displayBudget(budget);
+
+
 console.log(budget); 
 }
 
 // var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
-
 var ctrlAddItem = function() {
     var input, newItem; 
 

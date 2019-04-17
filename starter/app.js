@@ -9,6 +9,20 @@ var Expense = function(id, description, value) {
     this.value = value; 
 }; 
 
+// This is to calculate percentages and get percentages to update the % in the UI
+Expense.prototype.calcPercentage = function(totalIncome) {
+
+if (totalIncome > 0 ) {
+    this.percentage = Math.round((this.value / totalIncome) * 100);
+} else {
+    this.percentage = -1; 
+    }
+}; 
+
+Expense.prototype.getPercentage = function() {
+return this.percentage;
+}
+
 var Income = function(id, description, value) {
     this.id = id; 
     this.description = description; 
@@ -105,7 +119,23 @@ var data = {
             data.percentage = -1;
         }
      },
-   
+
+
+     calculatePercentages: function(){
+
+     data.allItems.exp.forEach(function(cur){
+     cur.calcPercentage(data.totals.inc);
+     });
+        
+    },
+    
+     getPercentages: function() {
+         var allPerc = data.allItems.exp.map(function(cur){
+             return cur.getPercentage();
+         }); 
+         return allPerc; 
+     },
+
         getBudget: function() {
             return {
                 budget: data.budget,
@@ -140,7 +170,8 @@ var DOMstrings = {
   incomeLabel: '.budget__income--value', 
   expensesLabel: '.budget__expenses--value', 
   percentageLabel: '.budget__expenses--percentage',
-  container: '.container'
+  container: '.container', 
+  expensesPercLabel: '.item__percentage'
 };
 
 return {
@@ -210,7 +241,31 @@ if (obj.percentage > 0) {
 }
 },
 
-    getDOMstrings: function() {
+//This displays/calcualtes the correct % for each input 
+
+displayPercentages: function(percentages) {
+
+var fields = document.querySelectorAll(DOMstrings.expensesPercLabel); 
+
+var nodeListForEach = function(list, callback) {
+    for (var i = 0; i < list.length; i++) {
+      callback(list[i], i); 
+    }
+};
+
+nodeListForEach(fields, function(current, index) {
+
+    if (percentages[index] > 0) {
+       current.textContent = percentages[index] + '%'; 
+    } else {
+        current.textContent = '---';
+    }
+});
+
+
+},
+
+ getDOMstrings: function() {
       return DOMstrings; 
     }
 };
@@ -248,6 +303,19 @@ UICtrl.displayBudget(budget);
 console.log(budget); 
 }
 
+// TO update Percentages //
+
+var updatePercentages = function() {
+
+// 1. Calculate percentages
+budgetCtrl.calculatePercentages();
+// 2. Read percentages from the budget controller 
+var percentages = budgetCtrl.getPercentages();
+// 3. Update the UI with the new percentages 
+UICtrl.displayPercentages(percentages); 
+
+};
+
 // var DOM = UICtrl.getDOMstrings(); // makes the above DOMstring useable in this function as well 
 var ctrlAddItem = function() {
     var input, newItem; 
@@ -264,6 +332,9 @@ UICtrl.addListItem(newItem, input.type);
 UICtrl.clearFields();  
 // 5. Calculate the budget budget
 updateBudget(); 
+// 6. Calculate and update percentages
+updatePercentages();
+
 
    } 
 };
@@ -288,6 +359,10 @@ if (itemID){
 
     // 3. Update and show the new budget 
     updateBudget(); 
+    
+    // 4. Calculate and update percentages
+    updatePercentages();
+ 
 }
 
 }; 
@@ -318,3 +393,6 @@ controller.init();
 // 3. Delete the items to the UI 
 // 4. Re-calculate budget 
 // 5. Update the UI
+
+
+
